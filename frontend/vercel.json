@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/prompts/:path*",
-      "destination": "https://ai-prompt-library-lr4x.onrender.com/prompts/:path*"
+      "source": "/api/:path*",
+      "destination": "https://ai-prompt-library-lr4x.onrender.com/:path*"
     },
     {
       "source": "/(.*)",

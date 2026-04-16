@@ -8,7 +8,7 @@ import { Prompt, ApiResponse } from '../models/prompt.model';
 })
 export class PromptService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/prompts/';
+  private readonly baseUrl = '/api/prompts/';
 
   getPrompts(search = '', sort = 'date'): Observable<Prompt[]> {
     let params = new HttpParams().set('sort', sort);
