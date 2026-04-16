@@ -142,12 +142,3 @@ In development, Angular's webpack dev server proxies `/prompts/` to Django on po
 
 ---
 
-## Screenshots
-
-> _Run the app and add screenshots here_
-
----
-
-## License
-
-MIT

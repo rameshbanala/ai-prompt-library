@@ -26,12 +26,13 @@ services:
     container_name: prompt_backend
     environment:
       SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
-      REDIS_HOST: ${REDIS_HOST}
+      REDIS_HOST: redis
       REDIS_PORT: ${REDIS_PORT}
     ports:
       - "8000:8000"

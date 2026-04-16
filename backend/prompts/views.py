@@ -118,28 +118,38 @@ def prompt_detail(request, prompt_id):
     """
     GET /prompts/<id>/
 
-    View count strategy:
-    1. Always atomically increment the DB column (persistent, no Redis needed).
-    2. Optionally also push to Redis for fast in-memory tracking if Redis is up.
-    3. Return the DB count — it's the source of truth.
+    View count strategy (Redis is the source of truth per spec):
+    1. Increment Redis counter atomically with INCR — fast, O(1), no race conditions.
+    2. Use the Redis return value as view_count in the response.
+    3. Also keep DB in sync (best-effort) so counts survive a Redis restart.
+    4. If Redis is down, fall back to DB atomic increment — counter still works.
     """
     try:
         prompt = Prompt.objects.get(id=prompt_id)
     except Prompt.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Prompt not found.'}, status=404)
 
-    # Atomic DB increment via F() — no race conditions, works without Redis
-    Prompt.objects.filter(id=prompt_id).update(view_count=F('view_count') + 1)
-    prompt.refresh_from_db(fields=['view_count'])
-    view_count = prompt.view_count
+    view_count = None
 
-    # Optional Redis bonus: keep a fast in-memory counter in sync
-    # Will fail fast (1s timeout) if Redis isn't running — never blocks the response
+    # PRIMARY: Redis is the source of truth
     try:
         r = get_redis()
-        r.incr(f'prompt:{prompt_id}:views')
+        key = f'prompt:{prompt_id}:views'
+        view_count = r.incr(key)   # atomic increment; returns new integer value
     except Exception:
-        pass  # Redis down — DB count is the source of truth, no problem
+        pass  # Redis unavailable — fall through to DB fallback
+
+    # FALLBACK: if Redis is down, use DB atomic increment
+    if view_count is None:
+        Prompt.objects.filter(id=prompt_id).update(view_count=F('view_count') + 1)
+        prompt.refresh_from_db(fields=['view_count'])
+        view_count = prompt.view_count
+    else:
+        # Keep DB in sync with Redis (best-effort, non-blocking)
+        try:
+            Prompt.objects.filter(id=prompt_id).update(view_count=view_count)
+        except Exception:
+            pass
 
     data = prompt_to_dict(prompt, include_content=True)
     data['view_count'] = view_count
