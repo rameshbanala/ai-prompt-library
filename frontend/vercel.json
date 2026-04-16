@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/prompts/:path*",
+      "destination": "https://YOUR_RENDER_APP_NAME.onrender.com/prompts/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
