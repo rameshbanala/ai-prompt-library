@@ -1,0 +1,47 @@
+<div class="page-wrapper">
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-container">
+    <div class="spinner"></div>
+    <p class="state-text">Loading prompt...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && error" class="state-container error-state">
+    <span class="state-icon">⚠</span>
+    <p class="state-text">{{ error }}</p>
+    <button class="btn-secondary" (click)="goBack()">← Back to Library</button>
+  </div>
+
+  <!-- Prompt Detail -->
+  <div *ngIf="!loading && !error && prompt" class="detail-container">
+    <div class="detail-header">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+      <span class="complexity-badge" [class]="getComplexityClass(prompt.complexity)">
+        {{ getComplexityLabel(prompt.complexity) }} · {{ prompt.complexity }}/10
+      </span>
+    </div>
+
+    <h1 class="detail-title">{{ prompt.title }}</h1>
+
+    <div class="detail-meta">
+      <div class="meta-item view-count">
+        <span class="view-icon">👁</span>
+        <span class="view-number">{{ prompt.view_count }}</span>
+        <span class="view-label">views</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-icon">📅</span>
+        <span>{{ formatDate(prompt.created_at) }}</span>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="content-label">Prompt Content</h2>
+      <pre class="content-block">{{ prompt.content }}</pre>
+    </div>
+
+    <div class="detail-actions">
+      <button class="btn-secondary" (click)="goBack()">← Back to Library</button>
+    </div>
+  </div>
+</div>

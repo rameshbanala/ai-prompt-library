@@ -1,0 +1,79 @@
+<div class="page-wrapper">
+  <div class="form-card">
+    <div class="form-header">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+      <h1 class="form-title">Add New Prompt</h1>
+      <p class="form-subtitle">Save a new AI image generation prompt to the library</p>
+    </div>
+
+    <!-- Global Error -->
+    <div *ngIf="error" class="global-error">
+      <span>⚠</span> {{ error }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Title -->
+      <div class="form-group" [class.has-error]="isFieldInvalid('title')">
+        <label for="title-input" class="form-label">Title</label>
+        <input
+          id="title-input"
+          type="text"
+          class="form-input"
+          placeholder="e.g. Cinematic sunset over ocean"
+          formControlName="title"
+        />
+        <span class="error-msg" *ngIf="isFieldInvalid('title')">
+          Title must be at least 3 characters.
+        </span>
+      </div>
+
+      <!-- Content -->
+      <div class="form-group" [class.has-error]="isFieldInvalid('content')">
+        <label for="content-input" class="form-label">Prompt Content</label>
+        <textarea
+          id="content-input"
+          class="form-input form-textarea"
+          placeholder="Describe your AI image generation prompt in detail..."
+          formControlName="content"
+          rows="6"
+        ></textarea>
+        <span class="error-msg" *ngIf="isFieldInvalid('content')">
+          Content must be at least 20 characters.
+        </span>
+      </div>
+
+      <!-- Complexity -->
+      <div class="form-group" [class.has-error]="isFieldInvalid('complexity')">
+        <label for="complexity-input" class="form-label">
+          Complexity
+          <span class="label-hint">(1 = simple, 10 = very complex)</span>
+        </label>
+        <input
+          id="complexity-input"
+          type="number"
+          class="form-input complexity-input"
+          placeholder="1–10"
+          formControlName="complexity"
+          min="1"
+          max="10"
+        />
+        <span class="error-msg" *ngIf="isFieldInvalid('complexity')">
+          Complexity must be between 1 and 10.
+        </span>
+      </div>
+
+      <!-- Submit -->
+      <button
+        id="submit-btn"
+        type="submit"
+        class="btn-submit"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">✦ Save Prompt</span>
+        <span *ngIf="loading" class="btn-loading">
+          <span class="spinner-small"></span> Saving...
+        </span>
+      </button>
+    </form>
+  </div>
+</div>

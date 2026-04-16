@@ -1,0 +1,88 @@
+<div class="page-wrapper">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">AI Prompt Library</h1>
+      <p class="page-subtitle">Curated prompts for AI image generation</p>
+    </div>
+    <button class="btn-primary" (click)="navigateToAdd()">
+      <span>＋</span> New Prompt
+    </button>
+  </div>
+
+  <!-- Controls: Search + Sort -->
+  <div class="controls-bar">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input
+        id="search-input"
+        type="text"
+        class="search-input"
+        placeholder="Search prompts by title..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      />
+    </div>
+    <div class="sort-wrapper">
+      <label for="sort-select" class="sort-label">Sort by</label>
+      <select
+        id="sort-select"
+        class="sort-select"
+        [(ngModel)]="sortBy"
+        (change)="onSortChange()"
+      >
+        <option value="date">Latest</option>
+        <option value="complexity">Complexity</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-container">
+    <div class="spinner"></div>
+    <p class="state-text">Loading prompts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="state-container error-state">
+    <span class="state-icon">⚠</span>
+    <p class="state-text">{{ error }}</p>
+    <button class="btn-secondary" (click)="loadPrompts()">Retry</button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && prompts.length === 0" class="state-container empty-state">
+    <span class="state-icon">✦</span>
+    <p class="state-text">No prompts found.</p>
+    <p class="state-subtext" *ngIf="searchTerm">Try a different search term.</p>
+    <p class="state-subtext" *ngIf="!searchTerm">Get started by adding your first prompt!</p>
+    <button class="btn-primary" (click)="navigateToAdd()">Add Prompt</button>
+  </div>
+
+  <!-- Prompt Grid -->
+  <div *ngIf="!loading && !error && prompts.length > 0" class="prompt-grid">
+    <div
+      *ngFor="let prompt of prompts"
+      class="prompt-card"
+      (click)="navigateToDetail(prompt.id)"
+      [attr.id]="'prompt-card-' + prompt.id"
+    >
+      <div class="card-header">
+        <span class="complexity-badge" [class]="getComplexityClass(prompt.complexity)">
+          {{ getComplexityLabel(prompt.complexity) }} · {{ prompt.complexity }}/10
+        </span>
+      </div>
+      <h2 class="card-title">{{ prompt.title }}</h2>
+      <div class="card-footer">
+        <span class="card-date">📅 {{ formatDate(prompt.created_at) }}</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results count -->
+  <div *ngIf="!loading && !error && prompts.length > 0" class="results-count">
+    Showing {{ prompts.length }} prompt{{ prompts.length === 1 ? '' : 's' }}
+    <span *ngIf="searchTerm"> for "<strong>{{ searchTerm }}</strong>"</span>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">✦</span>
+    <span class="brand-name">AI Prompt Library</span>
+  </div>
+  <div class="navbar-links">
+    <a
+      routerLink="/prompts"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      <span class="nav-icon">◈</span> All Prompts
+    </a>
+    <a
+      routerLink="/add-prompt"
+      routerLinkActive="active"
+      class="nav-link nav-link-accent"
+    >
+      <span class="nav-icon">＋</span> Add Prompt
+    </a>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
