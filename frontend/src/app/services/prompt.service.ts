@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Prompt, ApiResponse } from '../models/prompt.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PromptService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/api/prompts/';
+  private readonly baseUrl = environment.apiUrl;
 
   getPrompts(search = '', sort = 'date'): Observable<Prompt[]> {
     let params = new HttpParams().set('sort', sort);
